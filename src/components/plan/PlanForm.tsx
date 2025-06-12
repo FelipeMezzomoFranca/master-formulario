@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { planFormSchema, type PlanFormData } from '@/lib/schemas';
 import { propertyTypes, securityPriorities } from '@/lib/data';
-import { submitUserDataAndGetTips } from '@/lib/actions';
+import { submitUserDataAndLog } from '@/lib/actions'; // Changed import
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -76,20 +76,21 @@ export default function PlanForm() {
       return;
     }
 
-    const result = await submitUserDataAndGetTips(data, quizAnswers);
+    // Changed function call to submitUserDataAndLog
+    const result = await submitUserDataAndLog(data, quizAnswers);
     setIsLoading(false);
 
-    if (result.success && result.tips) {
-      localStorage.setItem('securityTips', JSON.stringify(result.tips));
+    if (result.success) {
+      // No longer saving tips to localStorage
       toast({
-        title: "Plano Gerado com Sucesso!",
-        description: "Suas dicas personalizadas estão prontas.",
+        title: "Dados Enviados com Sucesso!",
+        description: "Suas informações foram registradas.",
       });
-      router.push('/tips');
+      router.push('/tips'); // Redirect to the (now) thank you page
     } else {
       toast({
-        title: "Erro ao Gerar Plano",
-        description: result.error || "Não foi possível gerar seu plano. Tente novamente.",
+        title: "Erro ao Enviar Dados",
+        description: result.error || "Não foi possível registrar suas informações. Tente novamente.",
         variant: "destructive",
       });
     }
@@ -100,7 +101,7 @@ export default function PlanForm() {
       <CardHeader>
         <CardTitle className="text-3xl font-headline text-primary">Seu Plano de Proteção Personalizado</CardTitle>
         <CardDescription className="text-lg text-muted-foreground pt-2">
-          Quase lá! Complete estas informações para receber seu plano e dicas exclusivas.
+          Quase lá! Complete estas informações para concluirmos seu cadastro.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -163,7 +164,7 @@ export default function PlanForm() {
             <fieldset className="space-y-4 p-4 border rounded-lg">
               <legend className="text-xl font-semibold px-1 font-headline text-primary/80">Seus Dados de Contato</legend>
                <FormDescription className="text-sm text-muted-foreground pb-2">
-                Para receber o checklist completo, dicas exclusivas e um diagnóstico GRÁTIS com um especialista.
+                Para receber um contato de nossos especialistas e um diagnóstico GRÁTIS.
               </FormDescription>
               <FormField
                 control={form.control}
@@ -213,12 +214,12 @@ export default function PlanForm() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Processando seu Plano...
+                  Enviando Dados...
                 </>
               ) : (
                 <>
                   <Send className="mr-2 h-5 w-5" />
-                  Receber Meu Plano Grátis e Dicas Master!
+                  Concluir e Enviar para Análise!
                 </>
               )}
             </Button>

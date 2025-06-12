@@ -1,13 +1,12 @@
-"use server";
-import { generateSmartSecurityTips, type GenerateSmartSecurityTipsInput } from '@/ai/flows/generate-smart-security-tips';
+'use server';
 import type { PlanFormData } from '@/lib/schemas';
 
-export async function submitUserDataAndGetTips(
+export async function submitUserDataAndLog(
   planData: PlanFormData,
   quizAnswers: Record<string, string>
 ) {
-  // Simulate saving lead data
-  console.log('Lead data received:');
+  // Simulate saving lead data or preparing for external integration
+  console.log('User data received and would be sent to Google Sheets here:');
   console.log('Name:', planData.name);
   console.log('Phone:', planData.phone);
   console.log('Email:', planData.email);
@@ -15,29 +14,12 @@ export async function submitUserDataAndGetTips(
   console.log('Security Priority:', planData.securityPriority);
   console.log('Quiz Answers:', quizAnswers);
 
-  const combinedAnswers = {
-    ...quizAnswers,
-    'Tipo de Imóvel': planData.propertyType,
-    'Prioridade de Segurança': planData.securityPriority,
-  };
+  // For now, we'll just return a success status.
+  // In a real scenario, you'd add the Google Sheets integration logic here.
+  // This might involve calling another server action or API route that handles the Sheets API communication.
 
-  const aiInput: GenerateSmartSecurityTipsInput = {
-    quizAnswers: combinedAnswers,
-  };
+  // Simulate a successful operation
+  await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
 
-  try {
-    const result = await generateSmartSecurityTips(aiInput);
-    if (result && result.securityTips) {
-      return { success: true, tips: result.securityTips, error: null };
-    }
-    // Handle case where result or securityTips might be undefined/null from AI
-    console.error("AI result format unexpected:", result);
-    return { success: false, tips: null, error: "Não foi possível gerar as dicas personalizadas no momento. Tente novamente mais tarde." };
-
-  } catch (error) {
-    console.error("Error generating security tips:", error);
-    // Check if error is an object and has a message property
-    const errorMessage = (typeof error === 'object' && error !== null && 'message' in error) ? String(error.message) : "Erro desconhecido ao gerar dicas.";
-    return { success: false, tips: null, error: `Falha ao gerar dicas: ${errorMessage}` };
-  }
+  return { success: true, error: null };
 }

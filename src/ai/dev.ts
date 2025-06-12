@@ -1,4 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/generate-smart-security-tips.ts';
+// Removed import for generate-smart-security-tips.ts as it's no longer used.

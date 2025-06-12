@@ -3,16 +3,16 @@
 import type React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Home, Zap, MessageSquareHeart, Target, Lightbulb } from 'lucide-react';
+import { ShieldCheck, Home, Zap, MessageSquareHeart, Target, ThumbsUp } from 'lucide-react'; // Changed Lightbulb to ThumbsUp
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
   { name: 'Início', path: '/', icon: Home, progress: 0 },
-  { name: 'Diagnóstico', path: '/quiz', icon: Zap, progress: 25 },
-  { name: 'Mitos e Verdades', path: '/myths', icon: MessageSquareHeart, progress: 50 },
-  { name: 'Seu Plano', path: '/plan', icon: Target, progress: 75 },
-  { name: 'Dicas Master', path: '/tips', icon: Lightbulb, progress: 100 },
+  { name: 'Diagnóstico', path: '/quiz', icon: Zap, progress: 33 }, // Adjusted progress
+  { name: 'Mitos e Verdades', path: '/myths', icon: MessageSquareHeart, progress: 66 }, // Adjusted progress
+  { name: 'Seu Plano', path: '/plan', icon: Target, progress: 100 }, // Plan now leads to 100%
+  // { name: 'Dicas Master', path: '/tips', icon: Lightbulb, progress: 100 }, // Removed Dicas Master, now /tips is thank you page
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -22,7 +22,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   let currentModuleIndex = 0;
 
   const activeItem = navItems.find((item, index) => {
-    if (pathname === item.path || (pathname.startsWith(item.path) && item.path !== '/')) {
+    // Match if current path is exactly the item path or starts with item path (and item path is not just '/')
+    // Also, if on /tips, consider /plan as active for progress calculation
+    if (pathname === item.path || (pathname.startsWith(item.path) && item.path !== '/') || (pathname === '/tips' && item.path === '/plan')) {
       currentModuleIndex = index;
       return true;
     }
@@ -39,6 +41,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   } else if (pathname.startsWith('/quiz')) {
     currentProgress = navItems.find(item => item.path === '/quiz')?.progress ?? 0;
     currentModuleIndex = navItems.findIndex(item => item.path === '/quiz');
+  } else if (pathname.startsWith('/myths')) {
+    currentProgress = navItems.find(item => item.path === '/myths')?.progress ?? 0;
+    currentModuleIndex = navItems.findIndex(item => item.path === '/myths');
+  } else if (pathname.startsWith('/plan')) {
+    currentProgress = navItems.find(item => item.path === '/plan')?.progress ?? 0;
+    currentModuleIndex = navItems.findIndex(item => item.path === '/plan');
+  } else if (pathname === '/tips') { // If on thank you page, show 100%
+    currentProgress = 100;
+    currentModuleIndex = navItems.length -1; // Consider the last main step (plan) as active
   }
 
 
@@ -54,12 +65,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
              {navItems.map((item, index) => (
                 <Button 
                     key={item.name} 
-                    variant={pathname === item.path || (index < currentModuleIndex && activeItem?.path !== item.path) ? "secondary" : "ghost"} 
+                    variant={pathname === item.path || (index < currentModuleIndex && activeItem?.path !== item.path) || (pathname === '/tips' && item.path === '/plan') ? "secondary" : "ghost"} 
                     size="sm" 
                     asChild
-                    className={index > currentModuleIndex ? "pointer-events-none opacity-50" : ""}
+                    // Disable future steps, allow clicking on /plan even if on /tips
+                    className={(index > currentModuleIndex && !(pathname === '/tips' && item.path ==='/plan') ) ? "pointer-events-none opacity-50" : ""}
                 >
-                    <Link href={index <= currentModuleIndex ? item.path : '#'}>
+                    <Link href={index <= currentModuleIndex || (pathname === '/tips' && item.path ==='/plan') ? item.path : '#'}>
                         {item.name}
                     </Link>
                 </Button>
