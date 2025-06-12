@@ -30,7 +30,6 @@ export default function QuizForm() {
     defaultValues: {
       cameras: '',
       alarmSystem: '',
-      // Removido 'mainConcern' dos valores padrão
     },
   });
 
@@ -40,7 +39,6 @@ export default function QuizForm() {
       try {
         const parsedAnswers = JSON.parse(savedAnswers);
         form.reset(parsedAnswers);
-        // Poderia adicionar lógica para restaurar currentQuestionIndex, mas para 2 perguntas, começar do zero é ok.
       } catch (error) {
         console.error("Failed to parse saved quiz answers:", error);
         localStorage.removeItem('quizAnswers');
@@ -48,7 +46,11 @@ export default function QuizForm() {
     }
   }, [form]);
 
-  const handleNextQuestion = async () => {
+  const handleNextQuestion = async (event?: React.MouseEvent<HTMLButtonElement>) => {
+    if (event) {
+      event.preventDefault(); // Garante que o botão type="button" não cause submissão
+    }
+    
     const currentQuestionId = quizQuestions[currentQuestionIndex].id as keyof QuizFormData;
     const isValid = await form.trigger(currentQuestionId);
 
@@ -65,9 +67,11 @@ export default function QuizForm() {
   };
 
   function onSubmit(data: QuizFormData) {
+    // Salva as respostas finais (data contém todas as respostas do formulário válido)
     localStorage.setItem('quizAnswers', JSON.stringify(data));
     
     let score = 0;
+    // Usa 'data' diretamente, que é o estado atual e validado do formulário
     if (data.cameras === 'yes') score++;
     if (data.alarmSystem === 'yes_monitored') score++;
     localStorage.setItem('quizScore', JSON.stringify({ score, total: quizQuestions.length }));
@@ -103,15 +107,6 @@ export default function QuizForm() {
                       <RadioGroup
                         onValueChange={(value) => {
                           field.onChange(value);
-                          // Opcional: auto-avançar ao selecionar uma opção e for válido
-                          // setTimeout(async () => {
-                          //   const isValid = await form.trigger(currentQuestion.id as keyof QuizFormData);
-                          //   if (isValid && currentQuestionIndex < quizQuestions.length - 1) {
-                          //     handleNextQuestion();
-                          //   } else if (isValid && currentQuestionIndex === quizQuestions.length - 1) {
-                          //     // Potencialmente submeter o formulário aqui se for a última pergunta
-                          //   }
-                          // }, 100);
                         }}
                         defaultValue={field.value}
                         className="flex flex-col space-y-2 pt-2"
