@@ -1,3 +1,4 @@
+
 'use client';
 
 import type React from 'react';
@@ -59,7 +60,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="container flex items-center justify-between h-16 px-4 mx-auto sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2 text-xl font-bold font-headline text-primary">
             <ShieldCheck className="w-7 h-7 text-accent" />
-            Master Security Challenge
+            Master Monitoramento 24 Horas
           </Link>
           <div className="hidden md:flex items-center space-x-2">
              {navItems.map((item, index) => (
