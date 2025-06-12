@@ -11,6 +11,8 @@ import { ShieldQuestion, Target } from 'lucide-react';
 
 export default function MythsPage() {
   const [revealedMyths, setRevealedMyths] = useState(0);
+  // quizScore state can be removed if not used elsewhere, but keeping it for now doesn't harm.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null);
 
   useEffect(() => {
@@ -39,11 +41,7 @@ export default function MythsPage() {
           <CardDescription className="text-lg text-muted-foreground pt-2">
             Vamos desvendar alguns segredos e fortalecer seus conhecimentos!
           </CardDescription>
-          {quizScore && (
-            <p className="text-sm text-accent mt-2 font-semibold">
-              Sua pontuação no diagnóstico foi: {quizScore.score}/{quizScore.total}. {quizScore.score > quizScore.total / 2 ? "Bom começo!" : "Vamos melhorar!"}
-            </p>
-          )}
+          {/* Removed quiz score display */}
         </CardHeader>
       </Card>
 
