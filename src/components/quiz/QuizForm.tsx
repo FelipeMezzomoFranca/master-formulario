@@ -137,7 +137,7 @@ export default function QuizForm() {
               </Button>
             ) : (
               <Button type="submit" size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:scale-105">
-                Ver Resultado e Desbloquear Mitos da Segurança
+                Desbloquear Mitos da Segurança
                 <Lightbulb className="w-5 h-5 ml-2" />
               </Button>
             )}
