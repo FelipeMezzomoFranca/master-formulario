@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import AppShell from '@/components/AppShell';
 
 export const metadata: Metadata = {
-  title: 'Master Security Challenge',
-  description: 'Teste seus conhecimentos e proteja o que importa com a Master Monitoramento!',
+  title: 'Seu orçamento | Alarmes Master Monitoramento 24 Horas',
+  description: 'Crie seu orçamento de segurança com a Master Monitoramento 24 Horas.',
 };
 
 export default function RootLayout({
