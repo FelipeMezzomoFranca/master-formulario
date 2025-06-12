@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,18 +19,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { planFormSchema, type PlanFormData } from '@/lib/schemas';
 import { propertyTypes, securityPriorities } from '@/lib/data';
-import { submitUserDataAndLog } from '@/lib/actions'; // Changed import
+// submitUserDataAndLog import removed as it's no longer used directly here
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
+// useToast import removed
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Send } from 'lucide-react';
+import { Send } from 'lucide-react'; // Loader2 removed
 
 export default function PlanForm() {
   const router = useRouter();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, string> | null>(null);
+  // toast related code removed
+  // isLoading state removed
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string> | null>(null); // Kept for potential future use
 
   useEffect(() => {
     const storedAnswers = localStorage.getItem('quizAnswers');
@@ -38,26 +39,17 @@ export default function PlanForm() {
         setQuizAnswers(JSON.parse(storedAnswers));
       } catch(e) {
         console.error("Failed to parse quiz answers from local storage", e);
-        toast({
-          title: "Erro",
-          description: "Não foi possível carregar suas respostas anteriores. Por favor, recomece o desafio se os problemas persistirem.",
-          variant: "destructive",
-        });
+        // Optionally, inform user about quiz answers not loading, but not critical for WA link
       }
-    } else {
-       toast({
-        title: "Atenção",
-        description: "Respostas do quiz não encontradas. Para um plano mais preciso, complete o diagnóstico primeiro.",
-        variant: "default",
-      });
     }
-  }, [toast]);
+    // Initial toast about quiz answers not found can be removed or kept based on preference
+  }, []);
 
   const form = useForm<PlanFormData>({
     resolver: zodResolver(planFormSchema),
     defaultValues: {
       name: '',
-      phone: '',
+      phone: '', // Phone field remains in form for potential other uses
       email: '',
       propertyType: '',
       securityPriority: '',
@@ -65,35 +57,21 @@ export default function PlanForm() {
   });
 
   async function onSubmit(data: PlanFormData) {
-    setIsLoading(true);
-    if (!quizAnswers) {
-      toast({
-        title: "Erro",
-        description: "Não foi possível encontrar as respostas do quiz. Por favor, tente refazer o diagnóstico.",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
+    // quizAnswers check removed as it's not used in the current WA message
+    
+    const propertyTypeLabel = propertyTypes.find(pt => pt.value === data.propertyType)?.label || data.propertyType;
+    const securityPriorityLabel = securityPriorities.find(sp => sp.value === data.securityPriority)?.label || data.securityPriority;
 
-    // Changed function call to submitUserDataAndLog
-    const result = await submitUserDataAndLog(data, quizAnswers);
-    setIsLoading(false);
+    const messageText = `Olá, meu nome é ${data.name}! Respondi o formulário de segurança e gostaria de um diagnóstico! Quero proteger ${propertyTypeLabel}, meu nível de prioridade é ${securityPriorityLabel}.`;
+    const encodedMessage = encodeURIComponent(messageText);
+    
+    // IMPORTANT: The phone number 4699145281 might need a country code (e.g., 55 for Brazil) to work reliably.
+    // For example: https://wa.me/554699145281?text=${encodedMessage}
+    // Using the number as provided by the user for now.
+    const whatsappUrl = `https://wa.me/4699145281?text=${encodedMessage}`;
 
-    if (result.success) {
-      // No longer saving tips to localStorage
-      toast({
-        title: "Dados Enviados com Sucesso!",
-        description: "Suas informações foram registradas.",
-      });
-      router.push('/tips'); // Redirect to the (now) thank you page
-    } else {
-      toast({
-        title: "Erro ao Enviar Dados",
-        description: result.error || "Não foi possível registrar suas informações. Tente novamente.",
-        variant: "destructive",
-      });
-    }
+    window.open(whatsappUrl, '_blank');
+    router.push('/tips'); 
   }
 
   return (
@@ -101,7 +79,7 @@ export default function PlanForm() {
       <CardHeader>
         <CardTitle className="text-3xl font-headline text-primary">Seu Plano de Proteção Personalizado</CardTitle>
         <CardDescription className="text-lg text-muted-foreground pt-2">
-          Quase lá! Complete estas informações para concluirmos seu cadastro.
+          Quase lá! Complete estas informações para que possamos entrar em contato.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -164,7 +142,7 @@ export default function PlanForm() {
             <fieldset className="space-y-4 p-4 border rounded-lg">
               <legend className="text-xl font-semibold px-1 font-headline text-primary/80">Seus Dados de Contato</legend>
                <FormDescription className="text-sm text-muted-foreground pb-2">
-                Para receber um contato de nossos especialistas e um diagnóstico GRÁTIS.
+                Estes dados são para seu cadastro e para que possamos identificá-lo.
               </FormDescription>
               <FormField
                 control={form.control}
@@ -188,7 +166,7 @@ export default function PlanForm() {
                     <FormControl>
                       <Input type="tel" placeholder="Ex: 11999998888" {...field} />
                     </FormControl>
-                    <FormDescription>Este campo é obrigatório.</FormDescription>
+                    <FormDescription>Este campo é obrigatório para o cadastro.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -210,18 +188,9 @@ export default function PlanForm() {
             </fieldset>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button type="submit" size="lg" disabled={isLoading} className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:scale-105">
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Enviando Dados...
-                </>
-              ) : (
-                <>
-                  <Send className="mr-2 h-5 w-5" />
-                  Concluir e Enviar para Análise!
-                </>
-              )}
+            <Button type="submit" size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:scale-105">
+              <Send className="mr-2 h-5 w-5" />
+              Enviar Contato via WhatsApp
             </Button>
           </CardFooter>
         </form>
