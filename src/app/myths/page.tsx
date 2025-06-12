@@ -11,7 +11,8 @@ import { ShieldQuestion, Target } from 'lucide-react';
 
 export default function MythsPage() {
   const [revealedMyths, setRevealedMyths] = useState(0);
-  // quizScore state can be removed if not used elsewhere, but keeping it for now doesn't harm.
+  const [currentMythIndex, setCurrentMythIndex] = useState(0);
+  const [cardOpacity, setCardOpacity] = useState(1);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null);
 
@@ -28,9 +29,17 @@ export default function MythsPage() {
 
   const handleMythRevealed = () => {
     setRevealedMyths(prev => prev + 1);
+    if (currentMythIndex < mythItems.length - 1) {
+      setCardOpacity(0); // Start fade-out
+      setTimeout(() => {
+        setCurrentMythIndex(prev => prev + 1);
+        setCardOpacity(1); // Start fade-in for the new card
+      }, 300); // Duration for fade-out, adjust as needed (e.g., 300ms)
+    }
   };
 
   const allMythsRevealed = revealedMyths === mythItems.length;
+  const currentMyth = mythItems[currentMythIndex];
 
   return (
     <div className="flex flex-col items-center py-8 space-y-8">
@@ -41,14 +50,22 @@ export default function MythsPage() {
           <CardDescription className="text-lg text-muted-foreground pt-2">
             Vamos desvendar alguns segredos e fortalecer seus conhecimentos!
           </CardDescription>
-          {/* Removed quiz score display */}
         </CardHeader>
       </Card>
 
-      <div className="w-full max-w-3xl space-y-6">
-        {mythItems.map((myth) => (
-          <MythCardInteractive key={myth.id} myth={myth} onMythRevealed={handleMythRevealed} />
-        ))}
+      <div className="w-full max-w-3xl min-h-[280px]"> {/* Added min-h to prevent layout shift */}
+        {currentMyth && (
+          <div
+            key={currentMyth.id} // Ensures component re-mounts/updates correctly for transitions
+            style={{
+              opacity: cardOpacity,
+              transition: 'opacity 0.3s ease-in-out', // Matches setTimeout duration
+            }}
+            className="w-full" // Ensure the div takes full width for proper layout
+          >
+            <MythCardInteractive myth={currentMyth} onMythRevealed={handleMythRevealed} />
+          </div>
+        )}
       </div>
       
       <Card className="w-full max-w-3xl shadow-xl mt-8">
