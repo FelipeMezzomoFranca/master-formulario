@@ -3,15 +3,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
-import Image from 'next/image';
+// Image import removed as it's no longer used
 
 export default function WelcomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)]">
       <Card className="w-full max-w-2xl shadow-xl">
         <CardHeader className="text-center">
+          {/* The Image component that was here has been removed */}
           <div className="mx-auto mb-4">
-          <Image src="/images/logo.jpg" alt="Master Security Logo" width={120} height={120} className="rounded-lg" data-ai-hint="security logo" />
+            {/* Placeholder for logo if re-added later */}
           </div>
           <CardTitle className="text-3xl font-headline text-primary">Bem-vindo ao Desafio da Segurança Master!</CardTitle>
           <CardDescription className="text-lg text-muted-foreground pt-2">
