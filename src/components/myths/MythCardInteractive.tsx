@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -47,7 +48,7 @@ export default function MythCardInteractive({ myth, onMythRevealed }: MythCardIn
                 <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
               )}
               <p className={`text-lg font-semibold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                Sua resposta foi: {userChoice ? 'Verdadeiro' : 'Falso'}. {isCorrect ? 'Correto!' : 'Incorreto!'}
+                {isCorrect ? 'Sua resposta está correta!' : 'Sua resposta está incorreta!'}
               </p>
             </div>
             <p className="text-sm text-muted-foreground mb-1">A afirmação é <span className="font-bold">{myth.isTrue ? 'VERDADEIRA' : 'FALSA'}</span>.</p>
@@ -69,3 +70,4 @@ export default function MythCardInteractive({ myth, onMythRevealed }: MythCardIn
     </Card>
   );
 }
+

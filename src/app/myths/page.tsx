@@ -73,7 +73,7 @@ export default function MythsPage() {
            <Button asChild size="lg" disabled={!allMythsRevealed} className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:scale-105 disabled:opacity-50">
             <Link href="/plan">
               <Target className="w-5 h-5 mr-2" />
-              Criar Seu Plano de Proteção Personalizado
+              Criar Seu Plano de Segurança
             </Link>
           </Button>
         </CardFooter>
