@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +11,7 @@ export default function WelcomePage() {
       <Card className="w-full max-w-2xl shadow-xl">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-            <Image src="/images/logo.png" alt="Master Security Logo" width={120} height={120} className="rounded-lg" />
+            <Image src="/logo.png" alt="Master Security Logo" width={120} height={120} className="rounded-lg" data-ai-hint="company logo" />
           </div>
           <CardTitle className="text-3xl font-headline text-primary">Bem-vindo ao Desafio da Segurança Master!</CardTitle>
           <CardDescription className="text-lg text-muted-foreground pt-2">
