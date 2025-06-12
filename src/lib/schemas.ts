@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const planFormSchema = z.object({
@@ -13,7 +14,7 @@ export type PlanFormData = z.infer<typeof planFormSchema>;
 export const quizFormSchema = z.object({
   cameras: z.string().min(1, { message: "Resposta obrigatória." }),
   alarmSystem: z.string().min(1, { message: "Resposta obrigatória." }),
-  mainConcern: z.string().min(1, { message: "Resposta obrigatória." }),
+  // Removida a validação para 'mainConcern'
 });
 
 export type QuizFormData = z.infer<typeof quizFormSchema>;

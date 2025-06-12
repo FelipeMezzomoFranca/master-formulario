@@ -1,3 +1,4 @@
+
 export type QuizQuestion = {
   id: string;
   text: string;
@@ -25,16 +26,7 @@ export const quizQuestions: QuizQuestion[] = [
       { value: 'considering', label: 'Estou considerando adquirir um' },
     ],
   },
-  {
-    id: 'mainConcern',
-    text: 'Qual sua maior preocupação em relação à segurança do seu imóvel/negócio?',
-    options: [
-      { value: 'theft_robbery', label: 'Roubos e furtos' },
-      { value: 'vandalism', label: 'Vandalismo e danos à propriedade' },
-      { value: 'fire_accidents', label: 'Incêndios e acidentes' },
-      { value: 'internal_threats', label: 'Ameaças internas (funcionários, etc. - para empresas)' },
-    ],
-  },
+  // Removida a pergunta 'mainConcern' para encurtar o funil
 ];
 
 export type MythItem = {
@@ -85,3 +77,4 @@ export const securityPriorities = [
   { value: 'media', label: 'Média - Estou pesquisando e considerando opções' },
   { value: 'baixa', label: 'Apenas buscando informações por enquanto' },
 ];
+
