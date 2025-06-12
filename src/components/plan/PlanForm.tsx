@@ -30,6 +30,7 @@ export default function PlanForm() {
   const router = useRouter();
   // toast related code removed
   // isLoading state removed
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string> | null>(null); // Kept for potential future use
 
   useEffect(() => {
@@ -39,17 +40,15 @@ export default function PlanForm() {
         setQuizAnswers(JSON.parse(storedAnswers));
       } catch(e) {
         console.error("Failed to parse quiz answers from local storage", e);
-        // Optionally, inform user about quiz answers not loading, but not critical for WA link
       }
     }
-    // Initial toast about quiz answers not found can be removed or kept based on preference
   }, []);
 
   const form = useForm<PlanFormData>({
     resolver: zodResolver(planFormSchema),
     defaultValues: {
       name: '',
-      phone: '', // Phone field remains in form for potential other uses
+      phone: '', 
       email: '',
       propertyType: '',
       securityPriority: '',
@@ -57,17 +56,21 @@ export default function PlanForm() {
   });
 
   async function onSubmit(data: PlanFormData) {
-    // quizAnswers check removed as it's not used in the current WA message
     
     const propertyTypeLabel = propertyTypes.find(pt => pt.value === data.propertyType)?.label || data.propertyType;
-    const securityPriorityLabel = securityPriorities.find(sp => sp.value === data.securityPriority)?.label || data.securityPriority;
+    const securityPriorityObject = securityPriorities.find(sp => sp.value === data.securityPriority);
+    const securityPriorityLabel = securityPriorityObject?.label || data.securityPriority;
 
-    const messageText = `Olá, meu nome é ${data.name}! Respondi o formulário de segurança e gostaria de um diagnóstico! Quero proteger ${propertyTypeLabel}, meu nível de prioridade é ${securityPriorityLabel}.`;
+    let priorityMessagePart = '';
+    if (data.securityPriority === 'baixa') {
+      priorityMessagePart = 'e no momento estou apenas buscando informações';
+    } else {
+      priorityMessagePart = `meu nível de prioridade é ${securityPriorityLabel}`;
+    }
+
+    const messageText = `Olá, meu nome é ${data.name}! Respondi o formulário de segurança e gostaria de um diagnóstico! Quero proteger ${propertyTypeLabel}, ${priorityMessagePart}.`;
     const encodedMessage = encodeURIComponent(messageText);
     
-    // IMPORTANT: The phone number 4699145281 might need a country code (e.g., 55 for Brazil) to work reliably.
-    // For example: https://wa.me/554699145281?text=${encodedMessage}
-    // Using the number as provided by the user for now.
     const whatsappUrl = `https://wa.me/4699145281?text=${encodedMessage}`;
 
     window.open(whatsappUrl, '_blank');
